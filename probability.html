@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            padding-top: 20px;
+            border-radius: 20px;
+            box-shadow: 0px 0px 20px rgb(63, 197, 241);
+
+            width: 900px;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+
+        .container h3 {
+            margin-bottom: 30px;
+            font-family: monospace;
+            letter-spacing: 2px;
+        }
+
+        .timerandscore {
+            width: 600px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .question {
+            text-align: center;
+            width: 600px;
+
+            padding: 20px;
+        }
+
+        .questionnumber {
+            color: rgb(63, 197, 241);
+            border: 2px solid rgb(63, 197, 241);
+            border-radius: 100px;
+            padding: 20px;
+            text-align: center;
+
+        }
+
+        button {
+            cursor: pointer;
+            justify-content: center;
+            background-color: white;
+            border: 2px solid rgb(63, 197, 241);
+            border-radius: 10px;
+            padding: 5px 30px;
+            margin: 10px;
+            color: rgb(63, 197, 241);
+        }
+
+        #question_conatiner {
+            color: rgb(71, 71, 71);
+            border-radius: 10px;
+            box-shadow: 0 0 10px grey;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+
+        #display {
+            text-align: center;
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h3 style="color: grey;">PIPES AND CISTERNS</h3>
+        <div class="timerandscore">
+            <h2 id="timer"> TIME LEFT: <span id="time">220</span> seconds </h2>
+
+            <h2 id="score">SCORE: <span id="marks"></span></h2>
+
+        </div>
+
+        <div class="questionnumber">
+            <h2 id="number"></h2>
+        </div>
+        <div class="question" id="quiz">
+            <h2 id="question_conatiner"></h2>
+            <div id="option_container"></div>
+            <p id="display"> </p>
+            <button onclick="nextquestion()" id="click"> SUBMIT</button>
+            <div id="result"></div>
+
+        </div>
+    </div>
+
+    <script>
+
+const quizdata = [
+            {
+                question: 'An event in the probability that will never be happened is called as -',
+                options: ['Unsure event', 'sure event', 'possible event', 'impossible event'],
+                answer: 'impossible event'
+            },
+
+            {
+                question: 'What will be the value of P(not E) if P(E) = 0.07?',
+                options: ['90', '007', '0.93', '72'],
+                answer: '0.93'
+
+            },
+
+            {
+                question: 'What will be the probability of getting odd numbers if a dice is thrown?',
+                options: ['1/2', '2', '4/2', '5/2'],
+                answer: '1/2'
+
+            },
+
+            {
+                question: 'What is the probability of getting a sum as 3 if a dice is thrown?',
+                options: ['2/18', '1/18', '4', ' 1/36'],
+                answer: '1/18'
+
+            },
+
+            {
+                question: 'What is the probability of getting an even number when a dice is thrown?',
+                options: ['1/6','1/2','1/3','1/4'],
+                answer: '1/2'
+
+            },
+
+            {
+                question: 'The probability of getting two tails when two coins are tossed is -',
+                options: ['1/6','1/2','1/3','1/4'],
+                answer: '1/4'
+
+            },
+
+
+            {
+                question: ' What is the probability of getting the sum as a prime number if two dice are thrown?',
+                options: ['5/24','5/12','5/30','1/4'],
+                answer: '5/12'
+
+            },
+
+
+            {
+                question: ' What is the probability of getting atleast one head if three unbiased coins are tossed?',
+                options: ['7/8','1/2','5/8','8/9'],
+                answer: '7/8'
+
+            },
+
+
+            {
+                question: 'What is the probability of getting 1 and 5 if a dice is thrown once?',
+                options: ['1/6','1/3','2/3','8/9'],
+                answer: '1/3'
+
+            },
+
+
+            {
+                question: ' What will be the probability of losing a game if the winning probability is 0.3?',
+                options: ['0.5','0.6','0.7','0.8'],
+                answer: '0.7'
+            }
+
+
+        ];
+        let currentquestion = 0;
+        let marks = 0;
+        let timeleft = 220;
+        const timer = document.getElementById("time");
+        const timerinteval = setInterval(function () {
+            timeleft--;
+            timer.textContent = timeleft;
+
+            if (timeleft == 0) {
+                clearInterval(timerinteval);
+
+                submitanswer();
+            }
+        }, 1000);
+
+
+        const lenght = quizdata.length;
+
+        function loadquestion() {
+            const question_conatiner = document.getElementById('question_conatiner');
+            const option_container = document.getElementById('option_container');
+            const number = document.getElementById('number');
+
+            question_conatiner.innerHTML = quizdata[currentquestion].question;
+
+            option_container.innerHTML = '';
+            quizdata[currentquestion].options.forEach(option => {
+                const button = document.createElement("button");
+                button.innerText = option;
+                button.addEventListener('click', () => {
+                    button.style.backgroundColor = 'rgb(63, 197, 241)';
+                    button.style.color = 'white';
+                })
+                button.addEventListener('click', () => selectanswer(option));
+                option_container.appendChild(button);
+            })
+
+            number.innerHTML = `${[currentquestion + 1]} / ${lenght}`;
+
+
+        }
+
+        function selectanswer(selectedoption) {
+            const answer = quizdata[currentquestion].answer;
+
+            if (selectedoption === answer) {
+
+                display.innerHTML = selectedoption + ': <h4>your answer is correct</h4>';
+                marks++
+                const mark = document.getElementById('marks').innerHTML = `${marks} / 10`;
+            } else {
+
+                display.innerHTML = selectedoption + ':<h4> answer is wrong </h4> <br> The correct Answer is :' + answer;
+
+            }
+
+            const answerButtons = document.querySelectorAll('#option_container button');
+            answerButtons.forEach(button => {
+                button.disabled = true;
+            });
+            currentquestion++;
+        }
+
+
+        const click = document.getElementById('click');
+        click.addEventListener('mouseover', () => {
+            click.style.backgroundColor = 'rgb(63, 197, 241)';
+            click.style.color = 'white';
+        })
+
+        click.addEventListener('mouseout', () => {
+            click.style.backgroundColor = 'white';
+            click.style.color = 'rgb(63, 197, 241)';
+        })
+
+
+        function nextquestion() {
+
+
+            display.innerHTML = '';
+            if (currentquestion < quizdata.length) {
+                loadquestion();
+            } else {
+                submitanswer();
+            }
+        }
+
+        function submitanswer() {
+
+            const scores = marks;
+            const timed = timeleft;
+
+
+            localStorage.setItem('key', scores);
+            localStorage.setItem('timee', timed);
+
+            window.location.href = 'result.html';
+
+
+        }
+        loadquestion();
+    </script>
+</body>
+
+</html>
